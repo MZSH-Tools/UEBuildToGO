@@ -1,0 +1,3 @@
+# UE Build Tool 依赖
+# tkinter 为 Python 内置，无需安装
+pyinstaller>=6.0.0
