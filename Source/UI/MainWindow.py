@@ -2,7 +2,7 @@
 """主窗口 - UI 层"""
 
 import tkinter as tk
-from tkinter import ttk, scrolledtext, messagebox
+from tkinter import ttk, scrolledtext
 from datetime import datetime
 from pathlib import Path
 
@@ -70,33 +70,6 @@ class MainWindow:
         )
         self.LogText.pack(fill=tk.BOTH, expand=True)
 
-        # 按钮区域
-        BtnFrame = ttk.Frame(self.Root, padding=10)
-        BtnFrame.pack(fill=tk.X)
-
-        self.BuildBtn = ttk.Button(
-            BtnFrame,
-            text="开始编译",
-            command=self._OnBuildClick,
-            state=tk.DISABLED
-        )
-        self.BuildBtn.pack(side=tk.LEFT, padx=5)
-
-        self.OpenBtn = ttk.Button(
-            BtnFrame,
-            text="打开项目",
-            command=self._OnOpenClick,
-            state=tk.DISABLED
-        )
-        self.OpenBtn.pack(side=tk.LEFT, padx=5)
-
-        self.CloseBtn = ttk.Button(
-            BtnFrame,
-            text="关闭",
-            command=self.Root.quit
-        )
-        self.CloseBtn.pack(side=tk.RIGHT, padx=5)
-
     def _Log(self, Msg: str):
         """添加日志"""
         Timestamp = datetime.now().strftime("%H:%M:%S")
@@ -114,7 +87,6 @@ class MainWindow:
         if self.ProjectData.ErrorMsg:
             self._Log(f"错误: {self.ProjectData.ErrorMsg}")
             self.StatusLabel.config(text="错误", foreground="red")
-            messagebox.showerror("错误", self.ProjectData.ErrorMsg)
             return
 
         self.ProjectLabel.config(text=self.ProjectData.Name, foreground="black")
@@ -122,24 +94,14 @@ class MainWindow:
         self._Log(f"找到项目: {self.ProjectData.Name}")
         self._Log(f"引擎版本: {self.ProjectData.EngineVersion}")
         self._Log(f"引擎路径: {self.ProjectData.EnginePath}")
-        self.StatusLabel.config(text="就绪 - 可以开始编译", foreground="green")
-        self.BuildBtn.config(state=tk.NORMAL)
 
-    def _OnBuildClick(self):
-        """点击编译按钮"""
-        if self.BuildMgr.IsBuilding:
-            return
+        # 自动开始编译
+        self.Root.after(500, self._StartBuild)
 
-        self.BuildBtn.config(state=tk.DISABLED)
-        self.OpenBtn.config(state=tk.DISABLED)
+    def _StartBuild(self):
+        """开始编译"""
         self.StatusLabel.config(text="编译中...", foreground="orange")
         self.Progress.start(10)
-
-        # 清空日志
-        self.LogText.config(state=tk.NORMAL)
-        self.LogText.delete(1.0, tk.END)
-        self.LogText.config(state=tk.DISABLED)
-
         self._Log("开始编译项目...")
 
         self.BuildMgr.StartBuild(
@@ -152,41 +114,35 @@ class MainWindow:
         )
 
     def _OnBuildSuccess(self):
-        """编译成功"""
+        """编译成功，自动打开项目并关闭"""
         self.Progress.stop()
         self.StatusLabel.config(text="编译成功!", foreground="green")
         self._Log("=" * 50)
         self._Log("编译成功完成!")
         self._Log("=" * 50)
-        self.BuildBtn.config(state=tk.NORMAL)
-        self.OpenBtn.config(state=tk.NORMAL)
 
-    def _OnBuildError(self, ErrorMsg: str):
-        """编译失败"""
-        self.Progress.stop()
-        self.StatusLabel.config(text="编译失败", foreground="red")
-        self._Log(f"错误: {ErrorMsg}")
-        self.BuildBtn.config(state=tk.NORMAL)
-        messagebox.showerror("编译失败", ErrorMsg)
-
-    def _OnOpenClick(self):
-        """点击打开项目按钮"""
-        if not self.BuildMgr.BuildSuccess:
-            messagebox.showwarning("提示", "请先成功编译项目")
-            return
-
+        # 自动打开项目
         self._Log(f"正在打开项目: {self.ProjectData.Path}")
-
         Success, ErrorMsg = self.BuildMgr.OpenProject(
             self.ProjectData.Path,
             self.ProjectData.EnginePath
         )
 
         if Success:
-            self._Log("编辑器启动中...")
-            self.Root.after(2000, self.Root.quit)
+            self._Log("编辑器启动中，即将关闭...")
+            self.Root.after(1500, self.Root.quit)
         else:
-            messagebox.showerror("错误", ErrorMsg)
+            self._Log(f"错误: {ErrorMsg}")
+            self.StatusLabel.config(text="打开失败", foreground="red")
+
+    def _OnBuildError(self, ErrorMsg: str):
+        """编译失败，保持显示等待用户关闭"""
+        self.Progress.stop()
+        self.StatusLabel.config(text="编译失败", foreground="red")
+        self._Log(f"错误: {ErrorMsg}")
+        self._Log("=" * 50)
+        self._Log("编译失败，请检查日志后手动关闭窗口")
+        self._Log("=" * 50)
 
     def Run(self):
         """运行应用"""

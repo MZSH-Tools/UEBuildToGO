@@ -74,7 +74,7 @@ class BuildMgr:
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
                 text=True,
-                encoding='utf-8',
+                encoding='gbk',
                 errors='replace',
                 cwd=str(ProjectPath.parent),
                 shell=True
