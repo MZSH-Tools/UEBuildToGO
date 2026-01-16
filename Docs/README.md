@@ -1,18 +1,14 @@
 # UEBuildToGO 使用教程
 
-## 环境要求
+## 使用前提
 
-- Windows 系统
-- Python 3.10+（打包成 EXE 后无需）
-- Unreal Engine（Launcher 安装或源码编译）
+机器上已成功运行过一次项目（确保编译环境已配置好）
 
 ## 快速开始
 
-### 使用步骤
-
-1. 将工具放置到 UE 项目根目录（与 `.uproject` 同级）
-2. 双击运行 `UEBuildTool.exe`（或 `python Main.py`）
-3. 自动编译并打开项目
+1. 将 `UEBuildTool.exe` 放到项目根目录（与 `.uproject` 同级）
+2. 双击运行
+3. 等待编译完成，自动打开项目
 
 ## 配置说明
 
@@ -50,19 +46,6 @@
 | AutoCloseOnSuccess | true | 打开项目后自动关闭工具 |
 | CloseDelayMs | 1500 | 关闭延迟（毫秒） |
 
-## 打包成 EXE
-
-```bash
-# 安装打包工具
-pip install pyinstaller
-
-# 打包
-pyinstaller --onefile --windowed --name "UEBuildTool" Main.py
-
-# 输出位置
-dist/UEBuildTool.exe
-```
-
 ## 常见问题
 
 ### Q: 提示"未找到 .uproject 文件"
@@ -86,12 +69,7 @@ dist/UEBuildTool.exe
 
 ### Q: 编译失败
 
-**原因**：代码错误或环境问题
-
-**解决**：
-1. 查看日志窗口中的具体错误信息
-2. 在 IDE 中打开项目查看详细错误
-3. 确认 Visual Studio 已正确安装（UE 编译依赖）
+**解决**：查看日志窗口中的具体错误信息，联系程序同学协助排查
 
 ---
 

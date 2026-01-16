@@ -49,6 +49,14 @@ Source/Utils/
 - [ ] 实际项目测试验证
 - [ ] 打包成 EXE 发布
 
+## 打包发布
+
+```bash
+pip install pyinstaller
+pyinstaller --onefile --windowed --name "UEBuildTool" Main.py
+# 输出: dist/UEBuildTool.exe
+```
+
 ## 阻塞与待讨论
 
 | 事项 | 类型 | 说明 |
