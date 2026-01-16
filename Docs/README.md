@@ -1,11 +1,12 @@
 # UEBuildToGO 使用教程
 
+## 环境要求
+
+- Windows 系统
+- Python 3.10+（打包成 EXE 后无需）
+- Unreal Engine（Launcher 安装或源码编译）
+
 ## 快速开始
-
-### 准备工作
-
-1. 确保 Unreal Engine 通过 **Epic Games Launcher** 安装
-2. 确保已安装 Python 3.10+（打包后无需）
 
 ### 使用步骤
 
