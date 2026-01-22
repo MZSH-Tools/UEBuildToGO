@@ -74,9 +74,7 @@ class MainWindow:
         ButtonFrame = ttk.Frame(self.Root)
         ButtonFrame.pack(fill=tk.X, padx=10, pady=5)
         self.RebuildBtn = ttk.Button(ButtonFrame, text="重新编译", command=self.StartBuild, state=tk.DISABLED)
-        self.RebuildBtn.pack(side=tk.LEFT, expand=True)
-        self.OpenProjectBtn = ttk.Button(ButtonFrame, text="启动项目", command=self.OpenProject, state=tk.DISABLED)
-        self.OpenProjectBtn.pack(side=tk.RIGHT, expand=True)
+        self.RebuildBtn.pack()
 
     def Log(self, Msg: str):
         """添加日志"""
@@ -125,16 +123,12 @@ class MainWindow:
         )
 
     def OnBuildSuccess(self):
-        """编译成功"""
+        """编译成功，自动启动项目并关闭"""
         self.StatusLabel.config(text="编译成功!", foreground="green")
         self.RebuildBtn.config(state=tk.NORMAL)
-        self.OpenProjectBtn.config(state=tk.NORMAL)
         self.Log("=" * 50)
         self.Log("编译成功完成!")
         self.Log("=" * 50)
-
-    def OpenProject(self):
-        """启动项目并关闭工具"""
         self.Log(f"正在启动项目: {self.ProjectData.Path}")
         os.startfile(self.ProjectData.Path)
         self.Root.after(500, self.Root.quit)

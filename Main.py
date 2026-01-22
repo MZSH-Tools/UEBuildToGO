@@ -7,6 +7,11 @@ UE Quick Start - 一键编译并启动 Unreal Engine 项目
 import sys
 from pathlib import Path
 
+# PyInstaller 打包后隐藏控制台窗口（解决 console=False 的 bootloader bug）
+if getattr(sys, 'frozen', False):
+    import ctypes
+    ctypes.windll.user32.ShowWindow(ctypes.windll.kernel32.GetConsoleWindow(), 0)
+
 # 获取脚本/exe 所在目录（兼容 PyInstaller 打包）
 if getattr(sys, 'frozen', False):
     ScriptDir = Path(sys.executable).parent.resolve()
