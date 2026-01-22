@@ -7,7 +7,7 @@ from dataclasses import dataclass, field, asdict
 from typing import Optional
 
 # 默认配置文件名
-CONFIG_FILE_NAME = "UEQuickBuild.json"
+CONFIG_FILE_NAME = "UEQuickStart.json"
 
 
 @dataclass

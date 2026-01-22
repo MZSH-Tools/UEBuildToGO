@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """主窗口 - UI 层"""
 
+import os
 import tkinter as tk
 from tkinter import ttk, scrolledtext
 from datetime import datetime
@@ -21,7 +22,7 @@ class MainWindow:
         self.Config: AppConfig = LoadConfig(ScriptDir)
 
         self.Root = tk.Tk()
-        self.Root.title("UE Quick Build")
+        self.Root.title("UE Quick Start")
         self.Root.geometry("600x450")
         self.Root.resizable(True, True)
 
@@ -69,6 +70,14 @@ class MainWindow:
         )
         self.LogText.pack(fill=tk.BOTH, expand=True)
 
+        # 按钮区域
+        ButtonFrame = ttk.Frame(self.Root)
+        ButtonFrame.pack(fill=tk.X, padx=10, pady=5)
+        self.RebuildBtn = ttk.Button(ButtonFrame, text="重新编译", command=self.StartBuild, state=tk.DISABLED)
+        self.RebuildBtn.pack(side=tk.LEFT, expand=True)
+        self.OpenProjectBtn = ttk.Button(ButtonFrame, text="启动项目", command=self.OpenProject, state=tk.DISABLED)
+        self.OpenProjectBtn.pack(side=tk.RIGHT, expand=True)
+
     def Log(self, Msg: str):
         """添加日志"""
         Timestamp = datetime.now().strftime("%H:%M:%S")
@@ -100,6 +109,7 @@ class MainWindow:
     def StartBuild(self):
         """开始编译"""
         self.StatusLabel.config(text="编译中...", foreground="orange")
+        self.RebuildBtn.config(state=tk.DISABLED)
         self.Log("开始编译项目...")
 
         self.BuildMgr.StartBuild(
@@ -117,13 +127,22 @@ class MainWindow:
     def OnBuildSuccess(self):
         """编译成功"""
         self.StatusLabel.config(text="编译成功!", foreground="green")
+        self.RebuildBtn.config(state=tk.NORMAL)
+        self.OpenProjectBtn.config(state=tk.NORMAL)
         self.Log("=" * 50)
         self.Log("编译成功完成!")
         self.Log("=" * 50)
 
+    def OpenProject(self):
+        """启动项目并关闭工具"""
+        self.Log(f"正在启动项目: {self.ProjectData.Path}")
+        os.startfile(self.ProjectData.Path)
+        self.Root.after(500, self.Root.quit)
+
     def OnBuildError(self, ErrorMsg: str):
-        """编译失败，保持显示等待用户关闭"""
+        """编译失败"""
         self.StatusLabel.config(text="编译失败", foreground="red")
+        self.RebuildBtn.config(state=tk.NORMAL)
         self.Log(f"错误: {ErrorMsg}")
         self.Log("=" * 50)
         self.Log("编译失败，请检查日志后手动关闭窗口")
