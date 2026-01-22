@@ -7,8 +7,11 @@ UE Build Tool - 一键编译并打开 Unreal Engine 项目
 import sys
 from pathlib import Path
 
-# 添加项目根目录到路径
-ScriptDir = Path(__file__).parent.resolve()
+# 获取脚本/exe 所在目录（兼容 PyInstaller 打包）
+if getattr(sys, 'frozen', False):
+    ScriptDir = Path(sys.executable).parent.resolve()
+else:
+    ScriptDir = Path(__file__).parent.resolve()
 sys.path.insert(0, str(ScriptDir))
 
 from Source.UI.MainWindow import MainWindow
